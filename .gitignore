@@ -1,0 +1,5 @@
+build/
+elekiban.egg-info/
+sample/dataset/images/
+sample/dataset/labels/
+sample/output/
