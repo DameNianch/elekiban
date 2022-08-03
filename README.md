@@ -18,11 +18,16 @@ I will write...
 
 # Sample
 In sample directory
+
 """
 python3 src/image_classification.py
 """
+
 or
+
 """
 python3 src/image_classification_pretrained.py
 """
 
+# License
+Permission to use the model for service creation/research and technical verification.
