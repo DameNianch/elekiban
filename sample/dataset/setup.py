@@ -32,3 +32,20 @@ for i in range(10):
         draw.rectangle((8, 8, 56, 56), fill=(255, 255, 255))
         labels.append([1])
     img.save(f"dataset/images/classification/{i:04}.png")
+
+
+os.makedirs("dataset/images/segmentation", exist_ok=True)
+os.makedirs("dataset/labels/segmentation", exist_ok=True)
+img_size = (64, 64)
+for i in range(10):
+    i_color = (i * 20, 255 - i * 20, abs(255 - i * 50))
+    img_in = Image.new("RGB", img_size, i_color)
+    draw_in = ImageDraw.Draw(img_in)
+    draw_in.pieslice((4, 4, 60, 60), start=i * 20, end=270 + i * 20, fill=(0, 0, 0))
+    draw_in.rectangle((20, 20, 44, 44), fill=(255, 255, 255))
+    img_in.save(f"dataset/images/segmentation/{i:04}.png")
+    img_out = Image.new("RGB", img_size, (255, 0, 0))
+    draw_out = ImageDraw.Draw(img_out)
+    draw_out.pieslice((4, 4, 60, 60), start=i * 20, end=270 + i * 20, fill=(0, 255, 0))
+    draw_out.rectangle((20, 20, 44, 44), fill=(0, 0, 255))
+    img_out.save(f"dataset/labels/segmentation/{i:04}.png")
