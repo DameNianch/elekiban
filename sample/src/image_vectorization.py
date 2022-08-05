@@ -6,7 +6,7 @@ def div_255(x):
     return x / 255
 
 
-image_paths = glob("dataset/images/vectorization/*.png")
+image_paths = sorted(glob("dataset/images/vectorization/*.png"))
 input_pipeline = elekiban.pipeline.pipe.ImagePipe("image_input", image_paths, adjust_fn=div_255)
 
 output_labels = elekiban.pipeline.pump.load_csv("dataset/labels/vectorization/label.csv")
