@@ -6,10 +6,10 @@ def div_255(x):
     return x / 255
 
 
-image_paths = glob("dataset/images/*.png")
+image_paths = glob("dataset/images/classification/*.png")
 input_pipeline = elekiban.pipeline.pipe.ImagePipe("image_input", image_paths, adjust_fn=div_255)
 
-output_labels = elekiban.pipeline.pump.load_csv("dataset/labels/label.csv")
+output_labels = elekiban.pipeline.pump.load_csv("dataset/labels/classification/label.csv")
 output_pipeline = elekiban.pipeline.pipe.LabelPipe("label_output", output_labels, adjust_fn=div_255)
 
 train_faucet = elekiban.pipeline.toolbox.SimpleFaucet([input_pipeline], [output_pipeline], batch_size=4)
