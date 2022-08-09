@@ -1,14 +1,14 @@
+import numpy as np
 from tensorflow.keras import Model, Input
 from tensorflow.keras.layers import Dense, Conv2D, GlobalAveragePooling2D, MaxPool2D
 import tensorflow_hub as hub
 
 
 def get_simple_model(input_name, output_name, class_num, model_scale=1, image_size=[16, 16], input_channel=3):
-    down_sampling_time = int(min(image_size) / 2) - 1
     filters = input_channel
     x = Input(shape=(None, None, input_channel))
     y = x
-    for _ in range(down_sampling_time):
+    for _ in range(int(np.log2(min(image_size))) - 1):
         filters = max(int(model_scale * filters * 2), 1)
         y = Conv2D(filters, 3, padding="same", activation="relu")(y)
         y = MaxPool2D(padding="same")(y)
