@@ -69,3 +69,11 @@ for i in range(10):
     draw_out.pieslice((4, 4, 60, 60), start=i * 20, end=270 + i * 20, fill=(0, 255, 0))
     draw_out.rectangle((20, 20, 44, 44), fill=(0, 0, 255))
     img_out.save(f"dataset/labels/segmentation/{i:04}.png")
+
+os.makedirs("dataset/images/gan", exist_ok=True)
+img_size = (32, 32)
+for i in range(255):
+    img = Image.new("RGB", img_size, (255, 255, 255))
+    draw = ImageDraw.Draw(img)
+    draw.pieslice((4, 4, 28, 28), start=i * 3, end=270 + i * 3, fill=(0, 0, 0))
+    img.save(f"dataset/images/gan/{i:04}.png")
