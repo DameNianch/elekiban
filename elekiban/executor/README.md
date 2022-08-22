@@ -2,7 +2,7 @@
 This is WIP. The design is likely to change.
 
 ## train()
-Used for training a single deep learning model. Here red represents what the model learns. Also, it doesn't matter if the model is multitasking.
+Used for training a single deep learning model. Here red represents what the model learns. Also, it doesn't matter if the model is multitasking. Expression of multitask is absorbed by Model, Pipe and Faucet.
 
 ```mermaid
 graph TD;
@@ -18,9 +18,21 @@ This may be deprecated. Used for training a single deep learning model. Here red
 
 ```mermaid
 graph TD;
+subgraph Fixed Fine Tuning 
+    i2(Input)-->mx2(ModelX);
+    mx2(ModelX)-->my2(ModelY):::trainable;
+    my2-->o2(Output);
+    classDef trainable fill:#902
+end
+subgraph Fine Tuning 
+    i1(Input)-->mx1(ModelX):::trainable;
+    mx1(ModelX)-->my1(ModelY):::trainable;
+    my1-->o1(Output);
+    classDef trainable fill:#902
+end
 subgraph Common Training 
-    Input-->Model:::trainable;
-    Model-->Output;
+    i0(Input)-->m0(Model):::trainable;
+    m0(Model)-->o0(Output);
     classDef trainable fill:#902
 end
 ```
