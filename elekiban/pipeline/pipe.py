@@ -50,3 +50,8 @@ class LabelPipe(AbstractPipe):
 
     def _setup(self):
         pass
+
+
+class TextLinePipe(AbstractPipe):
+    def __init__(self, pipeline_name, textfile_path, ) -> None:
+        super().__init__()
