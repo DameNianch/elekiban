@@ -1,6 +1,7 @@
 import os
 import csv
 import random
+import json
 import numpy as np
 
 
@@ -18,7 +19,7 @@ for i in range(data_num):
     ticks = [2 * np.pi * i / wave_length + phi for i in range(wave_length)]
     i_wave["a"] = np.round(np.sin(ticks), 4).tolist()
     i_wave["b"] = np.round(np.cos(ticks) if i % 2 == 0 else np.sin(ticks), 3).tolist()
-    waves.append(str(i_wave))
+    waves.append(json.dumps(i_wave))
     labels.append([0 if i % 2 == 0 else 1])
 
 with open(os.path.join(wave_dir, "wave.jsonl"), "w") as f:

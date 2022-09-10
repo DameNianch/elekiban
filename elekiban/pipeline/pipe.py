@@ -4,6 +4,8 @@ from argparse import ArgumentError
 import cv2
 import numpy as np
 
+from elekiban.pipeline.pump import AbstractDataPump
+
 
 def through(x):
     return x
@@ -15,7 +17,7 @@ class AbstractPipe(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def _setup(self):
+    def _setup(self) -> None:
         pass
 
 
@@ -55,7 +57,7 @@ class LabelPipe(AbstractPipe):
         pass
 
 
-class CustomPipe(AbstractPipe):
+class CustomFunctionPipe(AbstractPipe):
     def __init__(self, pipe_name, custom_fn, adjust_fn=through, batch_fn=through, data_num=100) -> None:
         self._pipe_name = pipe_name
         self._custom_fn = custom_fn
@@ -66,6 +68,21 @@ class CustomPipe(AbstractPipe):
 
     def generate(self, indices):
         return self._batch_fn(np.array([self._adjust_fn(self._custom_fn(i)) for i in indices]))
+
+    def _setup(self):
+        pass
+
+
+class PipeWithPump(AbstractPipe):
+    def __init__(self, pipe_name: str, data_pump: AbstractDataPump, adjust_fn=through, batch_fn=through) -> None:
+        self.pipe_name = pipe_name
+        self._data_pump = data_pump
+        self._adjust_fn = adjust_fn
+        self._batch_fn = batch_fn
+        self.data_num = len(data_pump)
+
+    def generate(self, indices):
+        return self._batch_fn(np.array([self._adjust_fn(self._data_pump[i]) for i in indices]))
 
     def _setup(self):
         pass
@@ -88,9 +105,3 @@ class MixedPipe(AbstractPipe):
         self.data_num = sum([i_pipe.data_num for i_pipe in self._pipes])
         if len(self._pipes) != len(self._weights):
             raise ArgumentError
-        pass
-
-
-class TextLinePipe(AbstractPipe):
-    def __init__(self, pipe_name, textfile_path, ) -> None:
-        super().__init__()
