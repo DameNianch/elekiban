@@ -2,5 +2,6 @@ build/
 elekiban.egg-info/
 sample/dataset/images/
 sample/dataset/labels/
+sample/dataset/wave/
 sample/output/
 dist/
