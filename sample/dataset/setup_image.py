@@ -53,6 +53,9 @@ for i in range(10):
         labels.append([1])
     img.save(f"dataset/images/classification/{i:04}.png")
 
+with open("dataset/labels/classification/label.csv", "w") as f:
+    writer = csv.writer(f, lineterminator="\n")
+    writer.writerows(labels)
 
 os.makedirs("dataset/images/segmentation", exist_ok=True)
 os.makedirs("dataset/labels/segmentation", exist_ok=True)
