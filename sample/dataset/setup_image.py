@@ -1,5 +1,6 @@
 import os
 import csv
+import random
 from PIL import Image, ImageChops, ImageDraw
 
 os.makedirs("dataset/images/vectorization", exist_ok=True)
@@ -16,6 +17,25 @@ with open("dataset/labels/vectorization/label.csv", "w") as f:
     writer = csv.writer(f, lineterminator="\n")
     writer.writerows(labels)
 
+os.makedirs("dataset/images/labeling", exist_ok=True)
+os.makedirs("dataset/labels/labeling", exist_ok=True)
+labels = []
+img_size = (16, 16)
+for i in range(10):
+    i_label = [random.randint(0, 1) for _ in range(3)]
+    img = Image.new("RGB", img_size, tuple([255 * c for c in i_label]))
+    draw = ImageDraw.Draw(img)
+    if i % 2 == 0:
+        i_label.append(1)
+        draw.rectangle((4, 4, 8, 8), fill=(255, 255, 255))
+    else:
+        i_label.append(0)
+    img.save(f"dataset/images/labeling/{i:04}.png")
+    labels.append(i_label)
+
+with open("dataset/labels/labeling/label.csv", "w") as f:
+    writer = csv.writer(f, lineterminator="\n")
+    writer.writerows(labels)
 
 os.makedirs("dataset/images/classification", exist_ok=True)
 os.makedirs("dataset/labels/classification", exist_ok=True)
@@ -33,6 +53,9 @@ for i in range(10):
         labels.append([1])
     img.save(f"dataset/images/classification/{i:04}.png")
 
+with open("dataset/labels/classification/label.csv", "w") as f:
+    writer = csv.writer(f, lineterminator="\n")
+    writer.writerows(labels)
 
 os.makedirs("dataset/images/segmentation", exist_ok=True)
 os.makedirs("dataset/labels/segmentation", exist_ok=True)

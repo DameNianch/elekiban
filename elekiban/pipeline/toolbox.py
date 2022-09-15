@@ -30,7 +30,7 @@ class SimpleFaucet:
     def _setup(self):
         data_nums = {}
         for i_pipeline in self._pipelines["x"] + self._pipelines["y"]:
-            data_nums[i_pipeline.pipeline_name] = i_pipeline.data_num
+            data_nums[i_pipeline.pipe_name] = i_pipeline.data_num
 
         if len(set(data_nums.values())) != 1:
             raise ValidationErr(f"dataset nums should be equal for all dataset. {data_nums}")
@@ -42,7 +42,7 @@ class SimpleFaucet:
             pass
 
     def _turn_on(self, key, remained_indices):
-        return {p.pipeline_name: p.generate(remained_indices[:self.batch_size]) for p in self._pipelines[key]}
+        return {p.pipe_name: p.generate(remained_indices[:self.batch_size]) for p in self._pipelines[key]}
 
     def turn_on(self) -> dict:
         while True:
@@ -53,4 +53,4 @@ class SimpleFaucet:
                 remained_indices = remained_indices[:self.batch_size]
 
     def get_output_names(self):
-        return [i_pipeline.pipeline_name for i_pipeline in self._pipelines["y"]]
+        return [i_pipeline.pipe_name for i_pipeline in self._pipelines["y"]]

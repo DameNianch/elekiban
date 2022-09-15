@@ -15,7 +15,7 @@ def get_simple_model(input_name, output_name, class_num, model_scale=1, image_si
     y = GlobalAveragePooling2D()(y)
     y = Dense(filters, activation="relu")(y)
     y = Dense(max((filters + class_num) / 2, 1), activation="relu")(y)
-    y = Dense(class_num, activation="sigmoid" if class_num == 1 else "softmax")(y)
+    y = Dense(class_num, activation="sigmoid")(y)
     return Model(inputs={input_name: x}, outputs={output_name: y}, name="img2class")
 
 
@@ -25,5 +25,5 @@ def get_efficient_net_v2(input_name, output_name, class_num, input_channel=3):
     y = hub.KerasLayer("https://tfhub.dev/google/imagenet/efficientnet_v2_imagenet1k_b0/feature_vector/2", trainable=True)(x)
     y = Dense(640, activation="relu")(y)
     y = Dense(int((640 + class_num) / 2), activation="relu")(y)
-    y = Dense(class_num, activation="sigmoid" if class_num == 1 else "softmax")(y)
+    y = Dense(class_num, activation="sigmoid")(y)
     return Model(inputs={input_name: x}, outputs={output_name: y}, name="img2class")
