@@ -10,7 +10,7 @@ install_requires = [
 
 setup(
     name='elekiban',
-    version='0.0.2',
+    version='0.0.3',
     url="https://www.elekiban.pub",
     author="DameNianch",
     license="Check https://github.com/DameNianch/elekiban",
