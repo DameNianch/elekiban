@@ -5,3 +5,4 @@ sample/dataset/labels/
 sample/dataset/wave/
 sample/output/
 dist/
+__pycache__
