@@ -1,6 +1,13 @@
 from abc import ABCMeta, abstractmethod
 import random
+from typing import List
 from xml.dom import ValidationErr
+
+from elekiban.pipeline.pipe import AbstractPipe, IOPipes
+
+
+def through(inputs, outputs):
+    return [inputs, outputs]
 
 
 class AbstractFaucet(metaclass=ABCMeta):
@@ -22,14 +29,15 @@ class AbstractFaucet(metaclass=ABCMeta):
 
 
 class SimpleFaucet:
-    def __init__(self, input_pipelines: list, output_pipelines: list, batch_size: int) -> None:
-        self._pipelines = {"x": input_pipelines, "y": output_pipelines}
+    def __init__(self, input_pipelines: List[AbstractPipe], output_pipelines: List[AbstractPipe], batch_size: int, pairing_adjust_fn=through) -> None:
+        self._iopipes = IOPipes(inputs=input_pipelines, outputs=output_pipelines)
         self.batch_size = batch_size
+        self._pairing_adjust_fn = pairing_adjust_fn
         self._setup()
 
     def _setup(self):
         data_nums = {}
-        for i_pipeline in self._pipelines["x"] + self._pipelines["y"]:
+        for i_pipeline in self._iopipes.inputs + self._iopipes.outputs:
             data_nums[i_pipeline.pipe_name] = i_pipeline.data_num
 
         if len(set(data_nums.values())) != 1:
@@ -41,16 +49,19 @@ class SimpleFaucet:
             self._indices = list(range(data_num))
             pass
 
-    def _turn_on(self, key, remained_indices):
-        return {p.pipe_name: p.generate(remained_indices[:self.batch_size]) for p in self._pipelines[key]}
+    def _get_inputs(self, remained_indices: List[int]):
+        return {p.pipe_name: p.generate(remained_indices[: self.batch_size]) for p in self._iopipes.inputs}
+
+    def _get_outputs(self, remained_indices: List[int]):
+        return {p.pipe_name: p.generate(remained_indices[: self.batch_size]) for p in self._iopipes.outputs}
 
     def turn_on(self) -> dict:
         while True:
             random.shuffle(self._indices)
             remained_indices = self._indices
             for _ in range(self.iteration):
-                yield [self._turn_on("x", remained_indices), self._turn_on("y", remained_indices)]
-                remained_indices = remained_indices[:self.batch_size]
+                yield self._pairing_adjust_fn(self._get_inputs(remained_indices), self._get_outputs(remained_indices))
+                remained_indices = remained_indices[: self.batch_size]
 
     def get_output_names(self):
-        return [i_pipeline.pipe_name for i_pipeline in self._pipelines["y"]]
+        return [i_pipeline.pipe_name for i_pipeline in self._iopipes.outputs]

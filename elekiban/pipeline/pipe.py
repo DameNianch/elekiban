@@ -1,6 +1,8 @@
 from abc import ABCMeta
 from abc import abstractmethod
 from argparse import ArgumentError
+from dataclasses import dataclass
+from typing import List
 import cv2
 import numpy as np
 
@@ -19,6 +21,12 @@ class AbstractPipe(metaclass=ABCMeta):
     @abstractmethod
     def _setup(self) -> None:
         pass
+
+
+@dataclass
+class IOPipes:
+    inputs: List[AbstractPipe]
+    outputs: List[AbstractPipe]
 
 
 class ImagePipe(AbstractPipe):
@@ -89,7 +97,7 @@ class PipeWithPump(AbstractPipe):
 
 
 class MixedPipe(AbstractPipe):
-    def __init__(self, pipe_name: str, pipes: list, weights: list, mix_fn=through) -> None:
+    def __init__(self, pipe_name: str, pipes: List[AbstractPipe], weights: List[int], mix_fn=through) -> None:
         self.pipe_name = pipe_name
         self._pipes = pipes
         self._weights = weights
