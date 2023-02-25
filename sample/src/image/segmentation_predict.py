@@ -1,6 +1,6 @@
 import os
 from glob import glob
-from PIL import Image
+import cv2
 import numpy as np
 import elekiban
 
@@ -8,8 +8,7 @@ import elekiban
 def save_as_img(x, i):
     x = x["image_output"][0]
     x = 255 * np.identity(3)[np.reshape(np.argmax(x, axis=-1), [-1])].reshape(x.shape)
-    img = Image.fromarray(np.uint8(x))
-    img.save(f"output/segmentation/{i}.png")
+    cv2.imwrite(f"output/segmentation/{i}.png", np.uint8(x))
 
 
 def div_255(x):
