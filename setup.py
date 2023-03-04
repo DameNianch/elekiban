@@ -3,14 +3,14 @@ from setuptools import setup, find_packages
 install_requires = [
     "opencv-python",
     "Pillow",
-    "tensorflow",
+    "tensorflow==2.10.1",
     "tensorflow_hub",
     "numpy"
 ]
 
 setup(
     name='elekiban',
-    version='0.0.3',
+    version='0.0.4',
     url="https://www.elekiban.pub",
     author="DameNianch",
     license="Check https://github.com/DameNianch/elekiban",

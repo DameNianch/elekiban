@@ -6,3 +6,5 @@ sample/dataset/wave/
 sample/output/
 dist/
 __pycache__
+
+.devcontainer.json
