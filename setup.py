@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 install_requires = [
     "opencv-python",
     "Pillow",
-    "tensorflow",
+    "tensorflow==2.10.1",
     "tensorflow_hub",
     "numpy"
 ]
