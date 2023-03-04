@@ -14,6 +14,12 @@ def through(x):
 
 
 class AbstractPipe(metaclass=ABCMeta):
+    def __init__(self, pipe_name: str, data_num: int, adjust_fn=through, batch_fn=through) -> None:
+        self.pipe_name = pipe_name
+        self.data_num = data_num
+        self._adjust_fn = adjust_fn
+        self._batch_fn = batch_fn
+
     @abstractmethod
     def generate(self, indices):
         pass
@@ -31,12 +37,9 @@ class IOPipes:
 
 class ImagePipe(AbstractPipe):
     def __init__(self, pipe_name, image_paths, adjust_fn=through, batch_fn=through) -> None:
-        self.pipe_name = pipe_name
+        super().__init__(pipe_name=pipe_name, data_num=len(image_paths), adjust_fn=adjust_fn, batch_fn=batch_fn)
         self._image_paths = image_paths
-        self._adjust_fn = adjust_fn
-        self._batch_fn = batch_fn
         self._setup()
-        self.data_num = len(image_paths)
 
     def generate(self, indices):
         return self._batch_fn(np.array([self._adjust_fn(cv2.imread(self._image_paths[i])) for i in indices]))
@@ -52,11 +55,8 @@ class ImagePipe(AbstractPipe):
 
 class LabelPipe(AbstractPipe):
     def __init__(self, pipe_name, labels, adjust_fn=through, batch_fn=through) -> None:
-        self.pipe_name = pipe_name
+        super().__init__(pipe_name=pipe_name, data_num=len(labels), adjust_fn=adjust_fn, batch_fn=batch_fn)
         self._labels = labels
-        self._adjust_fn = adjust_fn
-        self._batch_fn = batch_fn
-        self.data_num = len(labels)
 
     def generate(self, indices):
         return self._batch_fn(np.array([self._adjust_fn(self._labels[i]) for i in indices]))
@@ -67,11 +67,9 @@ class LabelPipe(AbstractPipe):
 
 class CustomFunctionPipe(AbstractPipe):
     def __init__(self, pipe_name, custom_fn, adjust_fn=through, batch_fn=through, data_num=100) -> None:
-        self._pipe_name = pipe_name
+        super().__init__(pipe_name=pipe_name, data_num=data_num, adjust_fn=adjust_fn, batch_fn=batch_fn)
+        # TODO: Rethink the relationship between Pump and CustomFunctionPipe.
         self._custom_fn = custom_fn
-        self._adjust_fn = adjust_fn
-        self._batch_fn = batch_fn
-        self.data_num = data_num
         self._setup()
 
     def generate(self, indices):
@@ -83,11 +81,8 @@ class CustomFunctionPipe(AbstractPipe):
 
 class PipeWithPump(AbstractPipe):
     def __init__(self, pipe_name: str, data_pump: AbstractDataPump, adjust_fn=through, batch_fn=through) -> None:
-        self.pipe_name = pipe_name
+        super().__init__(pipe_name=pipe_name, data_num=len(data_pump), adjust_fn=adjust_fn, batch_fn=batch_fn)
         self._data_pump = data_pump
-        self._adjust_fn = adjust_fn
-        self._batch_fn = batch_fn
-        self.data_num = len(data_pump)
 
     def generate(self, indices):
         return self._batch_fn(np.array([self._adjust_fn(self._data_pump[i]) for i in indices]))
@@ -96,8 +91,10 @@ class PipeWithPump(AbstractPipe):
         pass
 
 
-class MixedPipe(AbstractPipe):
+class MixedPipe:
     def __init__(self, pipe_name: str, pipes: List[AbstractPipe], weights: List[int], mix_fn=through) -> None:
+        # TODO: Consider that MixedPipe is Pipe or not.
+        # super().__init__(pipe_name=pipe_name, adjust_fn=adjust_fn, batch_fn=batch_fn)
         self.pipe_name = pipe_name
         self._pipes = pipes
         self._weights = weights
