@@ -1,4 +1,3 @@
-import numpy as np
 from tensorflow.keras import Model, Input
 from tensorflow.keras.layers import Conv2D, MaxPool2D, Concatenate, UpSampling2D, Softmax
 
@@ -8,7 +7,16 @@ def get_simple_model(input_name, output_name, class_num, model_scale=1, image_si
     x = Input(shape=(None, None, input_channel))
     y = x
     y_bypass = []
-    for _ in range(int(np.log2(min(image_size))) - 1):
+
+    def calc_pooling_num(length):
+        num = 0
+        while True:
+            if length % (2**(num + 1)) == 0:
+                num += 1
+            else:
+                return num
+
+    for _ in range(min([calc_pooling_num(length) for length in image_size])):
         filters = max(int(model_scale * filters * 2), class_num)
         y = Conv2D(filters, 3, padding="same", activation="relu")(y)
         y_bypass.append(y)
