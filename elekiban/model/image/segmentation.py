@@ -31,7 +31,6 @@ def get_simple_model(input_name, output_name, class_num, model_scale=1, image_si
         filters = max(int(model_scale * filters / 2), class_num)
         y = Conv2D(filters, 3, padding="same", activation="relu")(y)
 
-    y = Conv2D(class_num, 1, padding="same")(y)
-    y = Softmax()(y)
+    y = Conv2D(class_num, 1, padding="same", activation="sigmoid" if class_num == 1 else "softmax")(y)
 
     return Model(inputs={input_name: x}, outputs={output_name: y}, name="SimpleImgSegmentation")
