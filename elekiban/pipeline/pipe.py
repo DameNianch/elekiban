@@ -2,6 +2,7 @@ from abc import ABCMeta
 from abc import abstractmethod
 from argparse import ArgumentError
 from dataclasses import dataclass
+import os
 from typing import List
 import cv2
 import numpy as np
@@ -46,11 +47,10 @@ class ImagePipe(AbstractPipe):
 
     def _setup(self):
         for i_path in self._image_paths:
-            try:
-                cv2.imread(i_path)
-            except BaseException:
-                print(f"Cannot open {i_path}")
-        print("ok")
+            # HACK: cv2 does not raise Error...
+            # cv2.imread(i_path)
+            if not os.path.isfile(i_path):
+                raise FileExistsError
 
 
 class LabelPipe(AbstractPipe):
